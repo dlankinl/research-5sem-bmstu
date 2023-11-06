@@ -1,0 +1,76 @@
+\begin{appendices}
+    \chapter{}
+    \begin{lstlisting}[caption={Кодирование методом LZW}, label={lst:lzw-encoding}, tabsize=2]
+    function LZWEncoding(s1)
+        table = create new unordered_map<string, int>
+    
+        for i from 0 to 255 do
+            ch = convert i to character
+            table[ch] = i
+        end for
+    
+        p = ""
+        c = ""
+        p += s1[0]
+        code = 256
+        output_code = create new empty vector of integers
+    
+        for i from 0 to length of s1 - 1 do
+            c += s1[i + 1] if i != length of s1 - 1
+    
+            if (p + c) is in table then
+                p = p + c
+            else
+                append table[p] to output_code
+                table[p + c] = code
+                increment code by 1
+                p = c
+            end if
+    
+            c = ""
+        end for
+    
+        print p, table[p]
+        append table[p] to output_code
+    
+        return output_code
+    end function
+    \end{lstlisting}
+    \begin{lstlisting}[caption={Кодирование методом LZW}, label={lst:lzw-decoding}, tabsize=2]
+    function LZWDecode(op)
+        table = create new empty map from integer to string
+        decodedString = ""
+    
+        for i from 0 to 255 do
+            ch = convert i to character
+            table[i] = ch
+        end for
+    
+        old = op[0]
+        n = 0
+        s = table[old]
+        c = s[0]
+    
+        count = 256
+    
+        for i from 0 to length of op - 2 do
+            n = op[i+1]
+    
+            if table does not contain n then
+                s = table[old] + c
+            else
+                s = table[n]
+            end if
+    
+            append s to decodedString
+    
+            c = s[0]
+            table[count] = table[old] + c
+            increment count by 1
+            old = n
+        end for
+    
+        return decodedString
+    end function
+    \end{lstlisting}
+\end{appendices}
